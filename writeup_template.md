@@ -59,10 +59,65 @@ Tuning parameters  is a main work.  The function region_of_interest to clip a re
 
 ![](D:\hzf\udacity\project\CarND-LaneLines-P1-master\test_images_output\5_after.png)
 
+
+
+According the results of review, I adjusted the program:
+
+1. Decreasing the `kernel-size` in the Gaussian Filter from 5 to 3,  remove the noise making the image less blurry.
+
+2. Change parameters of hough_lines to rule out the spurious lines and make segmented lines into a single line:
+
+       rho = 1
+       theta = np.pi/180
+       threshold = 15
+       min_line_len = 40
+       max_line_gap = 20
+       
+       -->
+       
+       rho = 2
+       theta = (np.pi/180)
+       threshold = 50
+       min_line_len = 100
+       max_line_gap = 200
+   The flowing is two images, the first image is older and the second is new.
+
+   In the new image, the right lane boundaries are connected a single line form a few segmented lines.
+
+   ![](D:\hzf\udacity\project\CarND-LaneLines-P1-master\test_images_output\rewiew_before.png)
+
+   ![](D:\hzf\udacity\project\CarND-LaneLines-P1-master\test_images_output\rewiew_after.png)
+
+3. Add two functions:
+
+   a. clean_lines(lines, threshold)
+
+   ​	Exclude data that are significantly different from the lines.
+
+   b. least_squares_fit(point_list, ymin, ymax)
+
+   ​	Calculate a line from a group points by the least square fitting method.
+
+4. Modify hough_lines to make multiple lines into a single line:
+
+   a.  Based on the slope, divide the lines into two groups,  left_lines and right_lines
+
+   b.  Clean up left_lines and right_lines and filter out outliers
+
+   c.  Fit out a line from a group points for left_lines  and right_lines 
+
+   d. Draw the left line and the right line in a image and return
+
+   
+
+   The flowing is the result, multiple lines are merged into  a single line.
+
+   ![](D:\hzf\udacity\project\CarND-LaneLines-P1-master\test_images_output\rewiew_after2.png)
+
   
 
 
-### 2. Identify potential shortcomings with your current pipeline
+### 2. Identify ptential shortcomings with your current pipeline
 
 One potential shortcoming would be loss some edges where the road is curve and the front party of the roads is outside the critical area.
 
